@@ -13,6 +13,7 @@ import org.valipuz.repository.UserRepository;
 import org.valipuz.repository.impl.LinkRepositoryImpl;
 import org.valipuz.repository.impl.UserRepositoryImpl;
 import org.valipuz.utils.CodeGenerator;
+import org.valipuz.utils.Messages;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -96,7 +97,7 @@ class LinkServiceTest {
         CustomException exception = assertThrows(CustomException.class,
                 () -> linkService.create(url, "5", null));
 
-        assertTrue(exception.getMessage().startsWith("Некорректный URL"));
+        assertEquals(Messages.INVALID_URL, exception.getMessage());
         // проверка URL идёт до регистрации, поэтому ни пользователь, ни ссылка не должны сохраниться
         assertFalse(Files.exists(tempDir.resolve("users.json")));
         assertFalse(Files.exists(tempDir.resolve("links.json")));
@@ -108,18 +109,28 @@ class LinkServiceTest {
         CustomException exception = assertThrows(CustomException.class,
                 () -> linkService.create("", "5", null));
 
-        assertEquals("Вы не ввели ссылку!", exception.getMessage());
+        assertEquals(Messages.EMPTY_URL, exception.getMessage());
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"0", "-5", "1001", "abc", "1.5"})
-    @DisplayName("При создании короткой ссылки получаем ошибку, если лимит вне диапазона 1..1000 или не число")
-    void createWithInvalidLimit(String limit) {
+    @ValueSource(strings = {"0", "-5", "1001"})
+    @DisplayName("При создании короткой ссылки получаем ошибку, если лимит вне диапазона 1..1000")
+    void createWithLimitOutOfRange(String limit) {
         CustomException exception = assertThrows(CustomException.class,
-                () -> linkService.create(URL, limit, null));
+            () -> linkService.create(URL, limit, null));
 
-        assertTrue(exception.getMessage().startsWith("Лимит должен быть"));
-        // лимит проверяется до регистрации, поэтому пользователь не сохраняется
+        assertEquals(Messages.limitOutOfRange(1000), exception.getMessage());
+        assertFalse(Files.exists(tempDir.resolve("users.json")));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"abc", "1.5"})
+    @DisplayName("При создании короткой ссылки получаем ошибку, если лимит не целое число")
+    void createWithLimitNotNumber(String limit) {
+        CustomException exception = assertThrows(CustomException.class,
+            () -> linkService.create(URL, limit, null));
+
+        assertEquals(Messages.LIMIT_NOT_NUMBER, exception.getMessage());
         assertFalse(Files.exists(tempDir.resolve("users.json")));
     }
 
@@ -171,7 +182,7 @@ class LinkServiceTest {
         CustomException exception = assertThrows(CustomException.class,
                 () -> linkService.shortLinkToOriginalUrl(shortUrl(link)));
 
-        assertTrue(exception.getMessage().startsWith("Лимит переходов по ссылке исчерпан"));
+        assertEquals(Messages.LIMIT_REACHED, exception.getMessage());
         // заблокированный переход не засчитывается
         assertEquals(2, linkRepository.findLink(link.getCode()).orElseThrow().getClicks());
     }
@@ -185,7 +196,7 @@ class LinkServiceTest {
         CustomException exception = assertThrows(CustomException.class,
                 () -> later.shortLinkToOriginalUrl(shortUrl(link)));
 
-        assertTrue(exception.getMessage().startsWith("Срок действия ссылки истёк"));
+        assertEquals(Messages.LINK_EXPIRED, exception.getMessage());
     }
 
     @Test
@@ -226,7 +237,7 @@ class LinkServiceTest {
         CustomException exception = assertThrows(CustomException.class,
                 () -> linkService.editLimit(shortUrl(link), "100", otherUser));
 
-        assertEquals("Управлять ссылкой может только её владелец!", exception.getMessage());
+        assertEquals(Messages.NOT_OWNER, exception.getMessage());
         assertEquals(5, linkRepository.findLink(link.getCode()).orElseThrow().getLimitClicks());
     }
 
@@ -239,7 +250,7 @@ class LinkServiceTest {
         CustomException exception = assertThrows(CustomException.class,
                 () -> linkService.delete(shortUrl(link), otherUser));
 
-        assertEquals("Управлять ссылкой может только её владелец!", exception.getMessage());
+        assertEquals(Messages.NOT_OWNER, exception.getMessage());
         assertTrue(linkRepository.findLink(link.getCode()).isPresent());
     }
 
@@ -252,7 +263,7 @@ class LinkServiceTest {
 
         CustomException exception = assertThrows(CustomException.class,
                 () -> linkService.shortLinkToOriginalUrl(shortUrl(link)));
-        assertTrue(exception.getMessage().startsWith("Короткая ссылка не найдена"));
+        assertEquals(Messages.LINK_NOT_FOUND_ON_OPEN + Messages.CREATE_NEW_HINT, exception.getMessage());
     }
 
     @Test

@@ -4,6 +4,7 @@ import org.valipuz.entity.ShortLink;
 import org.valipuz.exception.CustomException;
 import org.valipuz.repository.LinkRepository;
 import org.valipuz.utils.CodeGenerator;
+import org.valipuz.utils.Messages;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -73,7 +74,7 @@ public class LinkService {
     public synchronized ShortLink editLimit(String inputLink, String inputLimit, UUID currentUser) {
         ShortLink shortLink = findLinkAndCheckOwner(inputLink, currentUser);
         if (inputLimit == null || inputLimit.isEmpty()) {
-            throw new CustomException("Вы не ввели новый лимит кликов, не получится поменять!");
+            throw new CustomException(Messages.EMPTY_NEW_LIMIT);
         }
         shortLink.setLimitClicks(parseLimit(inputLimit));
         linkRepository.saveLink(shortLink);
@@ -108,12 +109,12 @@ public class LinkService {
         String code = extractCode(inputShortLink);
         ShortLink shortLink = linkRepository.findLink(code)
                 .orElseThrow(() -> new CustomException(
-                        "Короткая ссылка не найдена: возможно, она была удалена владельцем или по истечении срока действия"));
+                        Messages.LINK_NOT_FOUND_ON_OPEN + Messages.CREATE_NEW_HINT));
         if (shortLink.isExpired(clock.millis())) {
-            throw new CustomException("Срок действия ссылки истёк, она больше недоступна");
+            throw new CustomException(Messages.LINK_EXPIRED);
         }
         if (shortLink.isClickLimitsReached()) {
-            throw new CustomException("Лимит переходов по ссылке исчерпан, ссылка заблокирована");
+            throw new CustomException(Messages.LIMIT_REACHED);
         }
         shortLink.registerClick();
         linkRepository.saveLink(shortLink);
@@ -162,16 +163,16 @@ public class LinkService {
      */
     private void validateUrl(String url) {
         if (url == null || url.isEmpty()) {
-            throw new CustomException("Вы не ввели ссылку!");
+            throw new CustomException(Messages.EMPTY_URL);
         }
         try {
             URI uri = new URI(url);
             String scheme = uri.getScheme();
             if (uri.getHost() == null || !("http".equalsIgnoreCase(scheme) || "https".equalsIgnoreCase(scheme))) {
-                throw new CustomException("Некорректный URL. Пример: https://www.baeldung.com/java-9-http-client");
+                throw new CustomException(Messages.INVALID_URL);
             }
         } catch (URISyntaxException e) {
-            throw new CustomException("Некорректный URL");
+            throw new CustomException(Messages.INVALID_URL);
         }
     }
 
@@ -183,7 +184,7 @@ public class LinkService {
      */
     private int parseLimit(String inputLimit) {
         if (inputLimit == null) {
-            throw new CustomException("Ошибка ввода лимита кликов");
+            throw new CustomException(Messages.LIMIT_NOT_PASSED);
         }
         if (inputLimit.isEmpty()) {
             return defaultLimit;
@@ -192,10 +193,10 @@ public class LinkService {
         try {
             limit = Integer.parseInt(inputLimit);
         } catch (NumberFormatException e) {
-            throw new CustomException("Лимит должен быть целым числом");
+            throw new CustomException(Messages.LIMIT_NOT_NUMBER);
         }
         if (limit < 1 || limit > maxLimit) {
-            throw new CustomException("Лимит должен быть от 1 до " + maxLimit);
+            throw new CustomException(Messages.limitOutOfRange(maxLimit));
         }
         return limit;
     }
@@ -212,9 +213,9 @@ public class LinkService {
         long now = clock.millis();
         ShortLink link = linkRepository.findLink(code)
                 .filter(l -> !l.isExpired(now))
-                .orElseThrow(() -> new CustomException("Короткая ссылка не найдена"));
+                .orElseThrow(() -> new CustomException(Messages.LINK_NOT_FOUND));
         if (!link.getOwnerId().equals(currentUser)) {
-            throw new CustomException("Управлять ссылкой может только её владелец!");
+            throw new CustomException(Messages.NOT_OWNER);
         }
         return link;
     }
@@ -227,13 +228,11 @@ public class LinkService {
      */
     private String extractCode(String inputLink) {
         if (inputLink == null || inputLink.isEmpty()) {
-            throw new CustomException("Вы не ввели короткую ссылку!");
+            throw new CustomException(Messages.EMPTY_SHORT_LINK);
         }
         String prefix = domain + "/";
         if (!inputLink.startsWith(prefix) || inputLink.length() == prefix.length()) {
-            throw new CustomException(
-                    "Некорректный ввод короткой ссылки. Ссылка должна иметь вид " + prefix + "<код>, например " +
-                            prefix + "f3gh89");
+            throw new CustomException(Messages.invalidShortLink(prefix));
         }
         return inputLink.substring(prefix.length());
     }

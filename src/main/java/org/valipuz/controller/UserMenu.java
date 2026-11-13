@@ -4,6 +4,7 @@ import org.valipuz.entity.ShortLink;
 import org.valipuz.exception.CustomException;
 import org.valipuz.service.LinkService;
 import org.valipuz.service.UserService;
+import org.valipuz.utils.Messages;
 
 import java.util.List;
 import java.util.Scanner;
@@ -72,7 +73,7 @@ public class UserMenu {
             currentUser = userService.signIn(input);
             System.out.println("Вы вошли как " + currentUser);
         } catch (IllegalArgumentException e) {
-            throw new CustomException("Некорректный формат ID. Пример: 3f2a8c1e-5b7d-4c21-9a10-7e6f2d1b8c44");
+            throw new CustomException(Messages.INVALID_USER_ID);
         }
     }
 

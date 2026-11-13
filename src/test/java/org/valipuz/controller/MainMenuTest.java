@@ -13,6 +13,7 @@ import org.valipuz.repository.impl.UserRepositoryImpl;
 import org.valipuz.service.LinkService;
 import org.valipuz.service.UserService;
 import org.valipuz.utils.CodeGenerator;
+import org.valipuz.utils.Messages;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -95,7 +96,7 @@ class MainMenuTest {
         String out = run("2", shortUrl, "2", shortUrl, "0");
 
         assertTrue(out.contains("https://github.com"));
-        assertTrue(out.contains("Лимит переходов по ссылке исчерпан"));
+        assertTrue(out.contains(Messages.LIMIT_REACHED));
         assertEquals(1, linkRepository.findLink(link.getCode()).orElseThrow().getClicks());
     }
 

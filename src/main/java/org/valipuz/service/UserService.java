@@ -2,6 +2,7 @@ package org.valipuz.service;
 
 import org.valipuz.exception.CustomException;
 import org.valipuz.repository.UserRepository;
+import org.valipuz.utils.Messages;
 
 import java.util.UUID;
 
@@ -23,7 +24,7 @@ public class UserService {
         if (exists(userId)) {
             return userId;
         }
-        throw new CustomException("Пользователь с таким ID не найден");
+        throw new CustomException(Messages.USER_NOT_FOUND);
     }
 
     /**

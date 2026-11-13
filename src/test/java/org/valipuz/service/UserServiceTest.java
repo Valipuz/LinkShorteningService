@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.valipuz.exception.CustomException;
 import org.valipuz.repository.impl.UserRepositoryImpl;
+import org.valipuz.utils.Messages;
 
 import java.nio.file.Path;
 import java.util.UUID;
@@ -38,7 +39,7 @@ class UserServiceTest {
 
         CustomException exception = assertThrows(CustomException.class, () -> userService.signIn(unknown));
 
-        assertEquals("Пользователь с таким ID не найден", exception.getMessage());
+        assertEquals(Messages.USER_NOT_FOUND, exception.getMessage());
     }
 
     @Test

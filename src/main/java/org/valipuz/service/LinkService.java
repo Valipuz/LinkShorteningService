@@ -1,7 +1,7 @@
 package org.valipuz.service;
 
-import org.valipuz.exception.CustomException;
 import org.valipuz.entity.ShortLink;
+import org.valipuz.exception.CustomException;
 import org.valipuz.repository.LinkRepository;
 import org.valipuz.utils.CodeGenerator;
 

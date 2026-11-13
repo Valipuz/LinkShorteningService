@@ -1,8 +1,8 @@
 package org.valipuz;
 
+import org.valipuz.config.AppConfig;
 import org.valipuz.controller.MainMenu;
 import org.valipuz.controller.UserMenu;
-import org.valipuz.config.AppConfig;
 import org.valipuz.repository.LinkRepository;
 import org.valipuz.repository.UserRepository;
 import org.valipuz.repository.impl.LinkRepositoryImpl;

@@ -50,7 +50,9 @@
                 <configuration>
                     <java>
                         <removeUnusedImports/>
-                        <importOrder/>
+                        <importOrder>
+                            <order>,javax|java,\#</order>
+                        </importOrder>
                         <trimTrailingWhitespace/>
                         <endWithNewline/>
                         <indent>

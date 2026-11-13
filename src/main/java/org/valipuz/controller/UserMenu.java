@@ -1,7 +1,7 @@
 package org.valipuz.controller;
 
-import org.valipuz.exception.CustomException;
 import org.valipuz.entity.ShortLink;
+import org.valipuz.exception.CustomException;
 import org.valipuz.service.LinkService;
 import org.valipuz.service.UserService;
 
@@ -149,9 +149,9 @@ public class UserMenu {
     private void printUserMenu() {
         System.out.print("""
             ====== Меню пользователя ======
-            
+
             Выберите действие (введите цифру):
-            
+
             1 - Создать короткую ссылку
             2 - Изменить лимит кликов у короткой ссылки
             3 - Удалить короткую ссылку

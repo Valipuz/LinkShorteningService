@@ -12,6 +12,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * Реализация хранилища ссылок: ссылки хранятся в памяти по коду и сохраняются в JSON-файл при каждом изменении
+ */
 public class LinkRepositoryImpl implements LinkRepository {
     private final JsonFileHandler<List<ShortLink>> jsonFileHandler;
     private final Map<String, ShortLink> links;

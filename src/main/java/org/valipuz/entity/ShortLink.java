@@ -2,6 +2,9 @@ package org.valipuz.entity;
 
 import java.util.UUID;
 
+/**
+ * Короткая ссылка: код, исходный URL, владелец, срок действия, лимит и счётчик переходов
+ */
 public class ShortLink {
     private final String code;
     private final String originalUrl;

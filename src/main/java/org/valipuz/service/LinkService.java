@@ -13,6 +13,10 @@ import java.time.Duration;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Бизнес-логика коротких ссылок: создание, переход с учётом лимита и срока жизни,
+ * изменение лимита и удаление владельцем, очистка просроченных ссылок
+ */
 public class LinkService {
     private final UserService userService;
 

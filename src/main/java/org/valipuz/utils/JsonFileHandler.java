@@ -9,6 +9,11 @@ import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+/**
+ * Чтение и запись данных в JSON-файл через Gson
+ *
+ * @param <T> тип данных, которые хранятся в файле
+ */
 public class JsonFileHandler<T> {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 

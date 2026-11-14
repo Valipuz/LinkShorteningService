@@ -17,6 +17,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Точка входа: читает конфигурацию, собирает зависимости (ручной DI), запускает фоновую очистку и главное меню
+ */
 public class Main {
     public static void main(String[] args) {
         try {

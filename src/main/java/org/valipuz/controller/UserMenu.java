@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.UUID;
 
+/**
+ * Меню пользователя: вход по UUID, создание, изменение лимита, удаление и просмотр своих ссылок
+ */
 public class UserMenu {
     private final Scanner scanner;
     private final UserService userService;

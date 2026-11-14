@@ -6,6 +6,9 @@ import org.valipuz.utils.Messages;
 
 import java.util.UUID;
 
+/**
+ * Регистрация пользователей и вход по UUID
+ */
 public class UserService {
     private final UserRepository userRepository;
 

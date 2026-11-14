@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+/**
+ * Чтение параметров приложения из application.properties
+ */
 public class AppConfig {
     private final Properties properties = new Properties();
 

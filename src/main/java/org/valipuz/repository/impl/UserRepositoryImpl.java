@@ -8,6 +8,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+/**
+ * Реализация хранилища пользователей: UUID хранятся в памяти и сохраняются в JSON-файл при каждом изменении
+ */
 public class UserRepositoryImpl implements UserRepository {
     private final JsonFileHandler<Set<UUID>> jsonFileHandler;
     private final Set<UUID> users;

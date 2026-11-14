@@ -9,6 +9,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Scanner;
 
+/**
+ * Главное меню
+ */
 public class MainMenu {
 
     private final Scanner scanner;
